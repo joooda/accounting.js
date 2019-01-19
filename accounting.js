@@ -213,12 +213,22 @@
 	 * Fixes binary rounding issues (eg. (0.615).toFixed(2) === "0.61") that present
 	 * problems for accounting- and finance-related software.
 	 */
-	var toFixed = lib.toFixed = function(value, precision) {
+	var OriginaltoFixed = function(value, precision) {
 		precision = checkPrecision(precision, lib.settings.number.precision);
 		var power = Math.pow(10, precision);
 
 		// Multiply up by precision, round accurately, then divide and use native toFixed():
 		return (Math.round(lib.unformat(value) * power) / power).toFixed(precision);
+	};
+
+	/* Better version (lesson 13) */
+	var toFixed = lib.toFixed = function(value, precision) {
+		precision = checkPrecision(precision, lib.settings.number.precision);
+		var exponentialForm = Number(value + 'e' + precision);
+		var rounded = Math.round(exponentialForm);
+		var finalResult = Number(rounded + 'e-' + precision);
+	
+		return finalResult.toFixed(precision);
 	};
 
 
